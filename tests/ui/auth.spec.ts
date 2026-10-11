@@ -4,6 +4,7 @@ import { LoginPage } from '../../pages/login.page';
 
 test.describe('Authentication & Navigation', () => {
     test('Navigate to login page and check both forms', async ({ page }) => {
+
         const homePage = new HomePage(page);
 
         const loginPage = new LoginPage(page);

@@ -9,8 +9,6 @@ export abstract class BasePage {
 
     async openPage(path: string = '/') {
         await this.page.goto(path);
-
-
     }
 
     async getTitle() {

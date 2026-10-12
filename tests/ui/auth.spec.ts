@@ -22,7 +22,7 @@ test.describe('Authentication & Navigation', () => {
 
         });
 
-        //Data-driven cycle: processes every case from our dataset
+        //Data-driven cycle: processes every Negative case from our dataset
         for (const data of negativeLoginCases) {
             test(`Error is present for: ${data.testName}`, async ({ loginPage }) => {
                 await loginPage.login(data.email, data.password);
@@ -42,6 +42,18 @@ test.describe('Authentication & Navigation', () => {
         await loginPage.login(validUser.email, validUser.password);
         await expect(homePage.logoutLink).toBeVisible();
         await expect(homePage.loggedInUser).toBeVisible();
+
+    });
+
+    //Happy path for Logout
+    test('Successfull logout', async ({ page, homePage, loginPage }) => {
+        await loginPage.open();
+        await loginPage.login(validUser.email, validUser.password);
+        await homePage.logoutLink.click();
+        await expect(page).toHaveURL(/.*login/);
+        await expect(homePage.authLink).toBeVisible();
+        await expect(homePage.loggedInUser).not.toBeVisible();
+
 
     });
 

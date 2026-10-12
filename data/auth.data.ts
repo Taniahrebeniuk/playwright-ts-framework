@@ -29,3 +29,10 @@ export const negativeLoginCases: LoginTestCase[] = [
         expectedError: 'Your email or password is incorrect!'
     }
 ];
+
+
+export const validUser = {
+    name: 'tania_qa_testuser',
+    email: 'tania_qa_testuser@gmail.com',
+    password: 'Testpassword123!'
+};

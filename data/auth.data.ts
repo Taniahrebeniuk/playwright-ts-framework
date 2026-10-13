@@ -6,14 +6,6 @@ export interface LoginTestCase {
 
 }
 
-export interface SignupTestCase {
-    testName: string;
-    name: string;
-    email: string;
-    expectedError: string;
-
-}
-
 export const negativeLoginCases: LoginTestCase[] = [
     {
         testName: 'Login with non-existing user',

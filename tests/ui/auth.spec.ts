@@ -1,6 +1,6 @@
 import { test, expect } from '../../fixtures/page.fixture';
 import { negativeLoginCases, validUser } from '../../data/auth.data';
-
+import { generateUser } from '../../data/user.factory';
 
 test.describe('Authentication & Navigation', () => {
     test('Navigate to login page and check both forms', async ({ page, homePage, loginPage }) => {
@@ -22,7 +22,7 @@ test.describe('Authentication & Navigation', () => {
 
         });
 
-        //Data-driven cycle: processes every Negative case from our dataset
+        //Data-driven cycle: processes every Negative Login case from our dataset
         for (const data of negativeLoginCases) {
             test(`Error is present for: ${data.testName}`, async ({ loginPage }) => {
                 await loginPage.login(data.email, data.password);
@@ -55,6 +55,18 @@ test.describe('Authentication & Navigation', () => {
         await expect(homePage.loggedInUser).not.toBeVisible();
 
 
+    });
+
+    //Signup with already existing user in database
+    test('Error message is displayed when signing up with an existing email', async ({ loginPage }) => {
+        //take a random user but use an email address that is already taken
+        const userWithExistingEmail = generateUser({ email: validUser.email });
+
+        await loginPage.open();
+        await loginPage.signup(userWithExistingEmail.name, userWithExistingEmail.email);
+
+        await expect(loginPage.signupErrorMessage).toBeVisible();
+        await expect(loginPage.signupErrorMessage).toHaveText('Email Address already exist!');
     });
 
 });

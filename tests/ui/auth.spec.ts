@@ -1,6 +1,7 @@
 import { test, expect } from '../../fixtures/page.fixture';
-import { negativeLoginCases, validUser } from '../../data/auth.data';
+import { negativeLoginCases, validUser, negativeSignupCases } from '../../data/auth.data';
 import { generateUser } from '../../data/user.factory';
+import { LoginPage } from '../../pages/login.page';
 
 test.describe('Navigation & Forms', () => {
     test('Navigate to login page and check both forms', async ({ page, homePage, loginPage }) => {
@@ -64,6 +65,7 @@ test.describe('Registration Scenarios', () => {
         await loginPage.open();
 
     });
+
     //Signup with already existing user in database
     test('Error message is displayed when signing up with an existing email', async ({ loginPage }) => {
         //take a random user but use an email address that is already taken
@@ -90,5 +92,23 @@ test.describe('Registration Scenarios', () => {
         await expect(signupPage.accountCreatedTitle).toBeVisible();
 
     });
+});
 
+test.describe('Negative Signup Scenarios', () => {
+    //PRECONDITION: Each test begins by opening the Signup page
+    test.beforeEach(async ({ loginPage }) => {
+        await loginPage.open();
+    });
+
+    //Data-driven cycle: processes every Negative Sighup case from our dataset
+    for (const data of negativeSignupCases) {
+        test(`User cannot proceed wit ${data.testName}`, async ({ page, loginPage }) => {
+
+            await loginPage.signup(data.name, data.email);
+            //Verify that we have NOT navigated to /signup'
+            await expect(page).not.toHaveURL(/.*signup/);
+            await expect(loginPage.signupButton).toBeVisible();
+
+        });
+    }
 });

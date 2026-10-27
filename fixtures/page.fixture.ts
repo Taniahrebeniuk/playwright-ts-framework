@@ -10,6 +10,15 @@ type PageFixtures = {
 };
 
 export const test = baseTest.extend<PageFixtures>({
+    page: async ({ page }, use) => {
+        // 1. Enable ad blocking on the page
+        await page.route('**/*{googleads,doubleclick,googlesyndication,adservice}*/**', route =>
+            route.abort());
+
+        //2. Deliver a clean and fast page for testing
+        await use(page);
+    },
+
     homePage: async ({ page }, use) => {
         await use(new HomePage(page));
     },

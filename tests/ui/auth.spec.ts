@@ -76,11 +76,18 @@ test.describe('Registration Scenarios', () => {
         await expect(loginPage.signupErrorMessage).toHaveText('Email Address already exist!');
     });
 
-
-    test('Successful Sign up with random user data', async ({ page, loginPage }) => {
+    //Successful Sign up 
+    test('Successful Sign up with random user data', async ({ page, loginPage, signupPage }) => {
         const newUser = generateUser();
         await loginPage.signup(newUser.name, newUser.email);
         await expect(page).toHaveURL(/.*signup/);
+
+        await signupPage.fillAccountInformation(newUser);
+        await signupPage.fillAddressInformation(newUser);
+        await signupPage.clickCreateAccount();
+
+        await expect(page).toHaveURL(/.*account_created/);
+        await expect(signupPage.accountCreatedTitle).toBeVisible();
 
     });
 

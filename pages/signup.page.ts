@@ -1,5 +1,6 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './base.page';
+import { RegistrationUser } from '../data/user.factory';
 
 export class SignupPage extends BasePage {
     //enter account informarion
@@ -28,6 +29,10 @@ export class SignupPage extends BasePage {
     readonly mobileNumber: Locator;
     readonly createAccountButton: Locator;
 
+    //account created tittle + Continue button after registration
+    readonly accountCreatedTitle: Locator;
+    readonly continueButton: Locator;
+
     constructor(page: Page) {
         super(page);
 
@@ -47,7 +52,7 @@ export class SignupPage extends BasePage {
         this.lastName = this.page.locator('#last_name');
         this.company = this.page.locator('#company');
         this.address1 = this.page.locator('#address1');
-        this.address2 = this.page.locator('#address2')
+        this.address2 = this.page.locator('#address2');
         this.country = this.page.locator('#country');
         this.state = this.page.locator('#state');
         this.city = this.page.locator('#city');
@@ -55,16 +60,53 @@ export class SignupPage extends BasePage {
         this.mobileNumber = this.page.locator('#mobile_number');
         this.createAccountButton = this.page.getByRole('button', { name: 'Create Account' });
 
+        this.accountCreatedTitle = this.page.locator('[data-qa="account-created"]');
+        this.continueButton = this.page.locator('[data-qa="continue-button"]');
 
 
     }
+    //Enter Accout information block
+    async fillAccountInformation(user: RegistrationUser) {
+        if (user.title === 'Mrs') {
+            await this.titleMrsRadio.check();
+        } else {
+            await this.titleMrRadio.check();
+        }
 
+        await this.password.fill(user.password);
 
+        if (user.birthDay)
+            await this.birthDay.selectOption(user.birthDay);
+        if (user.birthMonth)
+            await this.birthMonth.selectOption(user.birthMonth);
+        if (user.birthYear)
+            await this.birthYear.selectOption(user.birthYear);
 
+        await this.newsletterCheckbox.check();
+        await this.specialOffersCheckbox.check();
 
+    }
 
+    //Enter Address Information block 
+    async fillAddressInformation(user: RegistrationUser) {
+        await this.firstName.fill(user.firstName);
+        await this.lastName.fill(user.lastName);
+        await this.company.fill(user.company);
+        await this.address1.fill(user.address1);
+        if (user.address2) {
+            await this.address2.fill(user.address2);
+        }
+        await this.country.selectOption(user.country);
+        await this.state.fill(user.state);
+        await this.city.fill(user.city);
+        await this.zipCode.fill(user.zipCode);
+        await this.mobileNumber.fill(user.mobileNumber);
 
+    }
 
-
+    //method for submit button
+    async clickCreateAccount() {
+        await this.createAccountButton.click();
+    }
 
 }

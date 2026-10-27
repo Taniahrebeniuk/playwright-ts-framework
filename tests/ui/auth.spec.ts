@@ -52,7 +52,6 @@ test.describe('Negative Login Scenarios', () => {
             await expect(loginPage.loginErrorMessage).toBeVisible();
             await expect(loginPage.loginErrorMessage).toHaveText(data.expectedError);
 
-
         });
 
     }
@@ -79,7 +78,7 @@ test.describe('Registration Scenarios', () => {
     });
 
     //Successful Sign up 
-    test('Successful Sign up with random user data', async ({ page, loginPage, signupPage }) => {
+    test('Successful Sign up with random user data', async ({ page, loginPage, signupPage, homePage }) => {
         const newUser = generateUser();
         await loginPage.signup(newUser.name, newUser.email);
         await expect(page).toHaveURL(/.*signup/);
@@ -90,6 +89,11 @@ test.describe('Registration Scenarios', () => {
 
         await expect(page).toHaveURL(/.*account_created/);
         await expect(signupPage.accountCreatedTitle).toBeVisible();
+
+        // Click Continue after creating an account
+        await signupPage.continueButton.click();
+        // Verify that our user has appeared in the top menu
+        await expect(homePage.loggedInUser).toContainText(newUser.name);
 
     });
 });
@@ -105,9 +109,11 @@ test.describe('Negative Signup Scenarios', () => {
         test(`User cannot proceed wit ${data.testName}`, async ({ page, loginPage }) => {
 
             await loginPage.signup(data.name, data.email);
+
+            //Verify that an invalid field has appeared in the form:
+            await expect(page.locator('.signup-form input:invalid')).toBeVisible();
             //Verify that we have NOT navigated to /signup'
             await expect(page).not.toHaveURL(/.*signup/);
-            await expect(loginPage.signupButton).toBeVisible();
 
         });
     }

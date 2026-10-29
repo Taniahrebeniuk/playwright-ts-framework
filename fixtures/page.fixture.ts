@@ -2,11 +2,13 @@ import { test as baseTest, expect } from '@playwright/test';
 import { HomePage } from '../pages/home.page';
 import { LoginPage } from '../pages/login.page';
 import { SignupPage } from '../pages/signup.page';
+import { ProductsPage } from '../pages/products.page'
 
 type PageFixtures = {
     homePage: HomePage;
     loginPage: LoginPage;
     signupPage: SignupPage;
+    productsPage: ProductsPage;
 };
 
 export const test = baseTest.extend<PageFixtures>({
@@ -30,6 +32,11 @@ export const test = baseTest.extend<PageFixtures>({
     signupPage: async ({ page }, use) => {
         await use(new SignupPage(page));
     },
+
+    productsPage: async ({ page }, use) => {
+        await use(new ProductsPage(page));
+
+    }
 
 });
 
